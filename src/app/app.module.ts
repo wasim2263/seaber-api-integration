@@ -1,5 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import {OrderModule} from "./order/order.module";
+import {BullModule} from "@nestjs/bull";
+import {Order} from "./order/entities/order.entity";
+
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -9,9 +13,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [],
+      entities: [Order],
       synchronize: true,
     }),
+    BullModule.forRoot({
+      redis: {
+        host: 'localhost',
+        port: 6379,
+      },
+    }),
+    OrderModule,
   ],
 })
 export class AppModule {}

@@ -8,10 +8,11 @@ import {ApiRequestService} from "./api-request.service";
 import {Order} from "./entities/order.entity";
 import {httpOptionsConfig} from "../../options/http.option";
 import {TypeOrmModule} from "@nestjs/typeorm";
+import {ProcessOrderConsumer} from "./processors/order.porcessor";
 
 @Module({
   controllers: [OrderController],
-  providers: [OrderService, ApiRequestService],
+  providers: [OrderService, ApiRequestService, ProcessOrderConsumer],
   imports:[
     BullModule.registerQueue({
       name: 'process-order',

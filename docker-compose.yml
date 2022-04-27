@@ -13,7 +13,7 @@ services:
     environment:
       - POSTGRES_USER=test
       - POSTGRES_PASSWORD=test123
-      - POSTGRES_DB=message_queue
+      - POSTGRES_DB=seaber_order
 
 
 volumes:

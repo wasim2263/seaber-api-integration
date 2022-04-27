@@ -8,7 +8,7 @@ export class OrderController {
 
   @Post()
   @HttpCode(HttpStatus.OK)
-  store(@Body() orderderDto: OrderDto): any {
-    return this.orderService.store(orderderDto);
+  store(@Body() orderDto: OrderDto): any {
+    return this.orderService.store(orderDto);
   }
 }

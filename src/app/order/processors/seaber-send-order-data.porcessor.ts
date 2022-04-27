@@ -20,6 +20,7 @@ export class SeaberSendOrderDataConsumer {
     async seaberSendOrderData(job: Job<Order>) {
         console.log('in seaber', job.data);
         const order: Order = job.data;
+
         const orderPayload = {
             extOrderId: order.order_id,
             fromLocation: order.from_location,
@@ -34,6 +35,7 @@ export class SeaberSendOrderDataConsumer {
         // console.log(response)
         const a = await response.toPromise()
         console.log('------ processor', a.status)
+        //can manage anything regarding delivery. maybe recall the queue for sending again if failed
         if (a.status == HttpStatus.OK) {
             order.message_sending_status = OrderMessageStatus.DELIVERED
             this.orderRepository.save(order);

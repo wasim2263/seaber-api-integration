@@ -15,9 +15,9 @@ async function bootstrap() {
   app.setGlobalPrefix(globalPrefix);
   app.useGlobalPipes(new ValidationPipe());
   setupSwagger(app);
-  const port = process.env.PORT || 3333;
+  const port = process.env.PORT || 3001;
   await app.listen(port);
-  app.enableCors({credentials: false, origin: "http://localhost:3000"});
+  app.enableCors({credentials: false, origin: "http://localhost:3001"});
 
   Logger.log(
     'Listening at http://localhost:' + port + '/' + globalPrefix,

@@ -1,11 +1,10 @@
-import {Processor, Process, InjectQueue} from '@nestjs/bull';
+import {InjectQueue, Process, Processor} from '@nestjs/bull';
 import {Job, Queue} from 'bull';
 import {InjectRepository} from "@nestjs/typeorm";
-import {HttpStatus, Injectable} from "@nestjs/common";
+import {Injectable} from "@nestjs/common";
 import {Order, OrderMessageStatus} from "../entities/order.entity";
 import {Repository} from "typeorm";
 import {OrderType} from "../dto/order.dto";
-import {ApiRequestService} from "../api-request.service";
 
 @Injectable()
 @Processor('process-order')
@@ -20,6 +19,7 @@ export class ProcessOrderConsumer {
     async processOrder(job: Job<unknown>) {
         console.log(job.data);
         const orderData: any = job.data;
+        //checking for existing data for create or update record
         let order = await this.orderRepository.findOne({order_id:orderData.extOrderId})
 
         if(!order){
@@ -37,11 +37,13 @@ export class ProcessOrderConsumer {
                 order.cargo_amount = orderData.cargoAmount;
             }
 
-            this.orderRepository.save(order);
-            console.log(order);
-            if (order.to_location && order.cargo_amount && order.from_location){
-                this.seaberSendOrderDataQueue.add(order);
+
+            if (order.to_location && order.cargo_amount > 0 && order.from_location){
+                order.message_sending_status = OrderMessageStatus.PROCESSING;
+                //sending to another queue to manage failed or interrupted queue
+                this.seaberSendOrderDataQueue.add(order, {delay:2000});
             }
+            this.orderRepository.save(order);
 
         }
     }

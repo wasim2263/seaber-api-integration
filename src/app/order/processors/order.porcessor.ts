@@ -1,5 +1,5 @@
 import {Processor, Process, InjectQueue} from '@nestjs/bull';
-import { Job } from 'bull';
+import {Job, Queue} from 'bull';
 import {InjectRepository} from "@nestjs/typeorm";
 import {HttpStatus, Injectable} from "@nestjs/common";
 import {Order, OrderMessageStatus} from "../entities/order.entity";

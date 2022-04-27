@@ -9,13 +9,17 @@ import {Order} from "./entities/order.entity";
 import {httpOptionsConfig} from "../../options/http.option";
 import {TypeOrmModule} from "@nestjs/typeorm";
 import {ProcessOrderConsumer} from "./processors/order.porcessor";
+import {SeaberSendOrderDataConsumer} from "./processors/seaber-send-order-data.porcessor";
 
 @Module({
   controllers: [OrderController],
-  providers: [OrderService, ApiRequestService, ProcessOrderConsumer],
+  providers: [OrderService, ApiRequestService, ProcessOrderConsumer, SeaberSendOrderDataConsumer],
   imports:[
     BullModule.registerQueue({
       name: 'process-order',
+    }),
+    BullModule.registerQueue({
+      name: 'seaber-send-order-data',
     }),
     HttpModule.register(httpOptionsConfig),
     TypeOrmModule.forFeature([

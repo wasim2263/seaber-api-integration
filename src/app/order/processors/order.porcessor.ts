@@ -1,4 +1,4 @@
-import { Processor, Process } from '@nestjs/bull';
+import {Processor, Process, InjectQueue} from '@nestjs/bull';
 import { Job } from 'bull';
 import {InjectRepository} from "@nestjs/typeorm";
 import {HttpStatus, Injectable} from "@nestjs/common";
@@ -11,8 +11,7 @@ import {ApiRequestService} from "../api-request.service";
 @Processor('process-order')
 export class ProcessOrderConsumer {
     constructor(
-        private readonly apiRequestService: ApiRequestService,
-
+        @InjectQueue('seaber-send-order-data') private seaberSendOrderDataQueue: Queue,
         @InjectRepository(Order)
         private orderRepository: Repository<Order>,
     ) {}
@@ -41,31 +40,9 @@ export class ProcessOrderConsumer {
             this.orderRepository.save(order);
             console.log(order);
             if (order.to_location && order.cargo_amount && order.from_location){
-                //TODO:: implement new queue to call api to send data and save status in db
-                const orderPayload = {
-                    extOrderId:order.order_id,
-                    fromLocation:order.from_location,
-                    cargoType:order.cargo_type,
-                    cargoAmount:order.cargo_amount,
-                }
-                console.log('api calling', orderPayload);
-                //middleware api  'api/orders/create-order'
-                const response = await this.apiRequestService.postRequest(
-                    '',
-                    orderPayload,
-                );
-                // console.log(response)
-                const a = await  response.toPromise()
-                console.log('------ processor',a.status)
-                if(a.status==HttpStatus.OK){
-                    order.message_sending_status = OrderMessageStatus.DELIVERED
-                    this.orderRepository.save(order);
-                }else{
-                    order.message_sending_status = OrderMessageStatus.FAILED
-                    this.orderRepository.save(order);
-                }
+                this.seaberSendOrderDataQueue.add(order);
             }
+
         }
-        // return {};
     }
 }

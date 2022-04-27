@@ -7,11 +7,11 @@ import { InjectQueue } from '@nestjs/bull';
 export class OrderService {
   constructor(@InjectQueue('process-order') private processOrderQueue: Queue) {}
 
-  async store(orderData: OrderDto) {
+  store(orderData: OrderDto) {
     console.log(orderData);
-    const job = await this.processOrderQueue.add(
+    this.processOrderQueue.add(
         orderData,
-        { delay: 6000 }, // 3 seconds delayed
+        // { delay: 3000 }, // 3 seconds delayed
     );
     return {};
   }

@@ -37,7 +37,7 @@ export class ProcessOrderConsumer {
                 order.cargo_amount = orderData.cargoAmount;
             }
 
-
+            console.log('in process-order', order);
             if (order.to_location && order.cargo_amount > 0 && order.from_location){
                 order.message_sending_status = OrderMessageStatus.PROCESSING;
                 //sending to another queue to manage failed or interrupted queue

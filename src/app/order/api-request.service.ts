@@ -1,7 +1,6 @@
 import {HttpService} from '@nestjs/axios';
-import {HttpException, Injectable} from '@nestjs/common';
-import {AxiosResponse} from 'axios';
-import {catchError, map, of, throwError} from 'rxjs';
+import { Injectable } from '@nestjs/common';
+import {catchError, map, of} from 'rxjs';
 
 @Injectable()
 export class ApiRequestService {
@@ -31,6 +30,7 @@ export class ApiRequestService {
             }),
             catchError((e)=>{
                 // console.log(e.response.data, e.response.status);
+
                 return of({
                     data: {
                         response: e.response.data,
@@ -38,7 +38,7 @@ export class ApiRequestService {
                     status: e.response.status,
                     statusText: 'failed',
                 });
-            }),
+            })
         );
     }
 }

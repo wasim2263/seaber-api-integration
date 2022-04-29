@@ -2,6 +2,7 @@
  - rename .env.example to .env and change the keys accordingly
  - run: 
  ```docker-compose up```
+ - install dependencies: ```npm install```
  - then run: ```npm run start:dev```
  - api collection:  {base api}/api/api-docs/ (default: http://localhost:3001/api/api-docs/)
  
